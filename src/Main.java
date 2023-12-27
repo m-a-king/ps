@@ -1,44 +1,27 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
-import static java.lang.Integer.parseInt;
-import static java.lang.Math.sqrt;
+import static java.lang.Math.min;
 
 public class Main {
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
-        int count = parseInt(reader.readLine());
-        int[] moveCount = new int[count];
+        int N = Integer.parseInt(reader.readLine());
+        long[] students = Arrays.stream(reader.readLine().split(" ")).mapToLong(Long::parseLong).sorted().toArray();
 
-        for (int i = 0; i < count; i++) {
-            String[] pointArr = reader.readLine().split(" ");
-            int x = parseInt(pointArr[0]);
-            int y = parseInt(pointArr[1]);
-            int distance = y - x;
+        int x = 0;
+        int y = Integer.MAX_VALUE;
 
-            moveCount[i] = calculateMoves(distance);
+        for (int i = 1; i < N; i += 2) {
+            x += students[i] - students[i - 1];
+
+            if (i + 1 < N) {
+                y = (int) (min(x, y) + students[i + 1] - students[i]);
+            }
         }
 
-        for (int moves : moveCount) {
-            System.out.println(moves);
-        }
-    }
-
-    private static int calculateMoves(int distance) {
-        if (distance <= 2) {
-            return distance; // 1 or 2
-        }
-
-        int sqrtDis = (int) sqrt(distance);
-        int square = sqrtDis * sqrtDis;
-        int diff = distance - square;
-        int moveCount = 2 * sqrtDis - 1;
-
-        if (diff > 0) {
-            moveCount += (diff > sqrtDis) ? 2 : 1;
-        }
-
-        return moveCount;
+        System.out.println(y);
     }
 }
