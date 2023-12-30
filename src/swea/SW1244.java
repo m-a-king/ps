@@ -52,3 +52,6 @@ public class SW1244 {
         return Integer.parseInt(new String(numbers));
     }
 }
+
+// TotalCases = Sum of (n-i-1) * Cases for (change-1) for i from 0 to n-1
+// brute force
