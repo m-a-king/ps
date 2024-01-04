@@ -1,55 +1,71 @@
 package baekJoon;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 import static java.lang.Integer.parseInt;
 
 public class BJ2751 {
 
+    static int[] temp;
+
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter bufferedWriter = new BufferedWriter(new OutputStreamWriter(System.out));
         int n = parseInt(bufferedReader.readLine());
         int[] numbers = new int[n];
+        temp = new int[n];
 
         for (int i = 0; i < n; i++) {
             numbers[i] = parseInt(bufferedReader.readLine());
         }
 
-        quickSort(numbers, 0, n-1);
+        mergeSort(numbers, 0, n-1);
 
         for (int number : numbers) {
-            System.out.println(number);
+            bufferedWriter.write(number + "\n");
         }
+        bufferedWriter.flush();  // 버퍼에 남아 있는 데이터를 모두 출력
+        bufferedWriter.close();  // 리소스 해제
     }
 
-    public static void quickSort(int arr[], int low, int high) {
-        if (low < high) {
-            int targetIndex = partition(arr, low, high);
+    private static void mergeSort(int[] numbers, int left, int right) {
 
-            quickSort(arr, low, targetIndex - 1);
-            quickSort(arr, targetIndex + 1, high);
+        if (left < right) {
+            int mid = (left+right)/2;
+
+            mergeSort(numbers, left, mid);
+            mergeSort(numbers, mid+1, right);
+
+            merge(numbers, left, mid, right);
         }
+
     }
 
-    public static int partition(int arr[], int low, int high) {
-        int pivot = arr[high];
-        int x = low - 1;
-        for (int i = low; i < high; i++) {
-            if (arr[i] <= pivot) {
-                x++;
+    private static void merge(int[] numbers, int left, int mid, int right) {
+        int i = left;
+        int j = mid + 1;
+        int k = left;
 
-                int temp = arr[x];
-                arr[x] = arr[i];
-                arr[i] = temp;
+        while (i <= mid && j <= right) {
+            if (numbers[i] <= numbers[j]) {
+                temp[k++] = numbers[i++];
+            }else {
+                temp[k++] = numbers[j++];
             }
         }
 
-        int temp = arr[x + 1];
-        arr[x + 1] = pivot; // arr[high]
-        arr[high] = temp;
-        return x + 1;
+        while (i <= mid) {
+            temp[k++] = numbers[i++];
+        }
+
+        while (j <= right) {
+            temp[k++] = numbers[j++];
+        }
+
+        for (int l = left; l <= right; l++) {
+            numbers[l] = temp[l];
+        }
     }
+
 
 }
