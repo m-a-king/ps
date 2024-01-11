@@ -66,7 +66,6 @@ public class BJ9019 {
             }
         }
     }
-
     static class Node {
         int number;
         String path;
@@ -76,5 +75,4 @@ public class BJ9019 {
             this.path = path;
         }
     }
-
 }
