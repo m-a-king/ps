@@ -9,7 +9,6 @@ import java.util.Set;
 import static java.lang.Integer.parseInt;
 
 public class BJ11723 {
-
     public static void main(String[] args) throws IOException {
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
