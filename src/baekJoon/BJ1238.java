@@ -45,7 +45,7 @@ public class BJ1238 {
         partyStudent = parseInt(s[2]);
 
         for (int i = 0; i <= studentsCount; i++) {
-            graph.add(new ArrayList<Node>());
+            graph.add(new ArrayList<>());
         }
 
         for (int i = 0; i < roadsCount; i++) {
@@ -79,26 +79,28 @@ public class BJ1238 {
         int[] times = new int[studentsCount + 1];
         Arrays.fill(times, Integer.MAX_VALUE);
         times[start] = 0;
-        boolean[] visited = new boolean[studentsCount + 1];
+//        boolean[] visited = new boolean[studentsCount + 1];
 
         priorityQueue.offer(new Node(start, 0));
         while (!priorityQueue.isEmpty()) {
             Node current = priorityQueue.poll();
-            if (visited[current.idx]) {
-                continue;
-            }
-
+//            if (visited[current.idx]) {
+//                continue;
+//            }
             if (times[current.idx] < current.time) {
                 continue;
             }
+//            visited[current.idx] = true;
 
             for (Node next : graph.get(current.idx)) {
-                int nextIdx = next.idx;
+//                if (visited[next.idx]) {
+//                    continue;
+//                }
                 int newTime = times[current.idx] + next.time;
 
-                if (newTime < times[nextIdx]) {
-                    times[nextIdx] = newTime;
-                    priorityQueue.offer(new Node(nextIdx, newTime));
+                if (newTime < times[next.idx]) {
+                    times[next.idx] = newTime;
+                    priorityQueue.offer(new Node(next.idx, newTime));
                 }
             }
         }
