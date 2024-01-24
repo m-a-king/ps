@@ -12,6 +12,7 @@ public class BJ15657 {
     static int n,m;
     static int[] numbers;
     static StringBuilder stringBuilder = new StringBuilder();
+    static int[] res;
 
     public static void main(String[] args) throws IOException {
 
@@ -22,26 +23,29 @@ public class BJ15657 {
         m = parseInt(nm[1]);
 
         numbers = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).sorted().toArray();
-
+        res = new int[m];
         dfs(0, 0);
+
+        System.out.println(stringBuilder);
 
     }
 
     private static void dfs(int current, int depth) {
 
         if (depth == m) {
-            System.out.println(stringBuilder.toString().trim());
+            for (int r : res) {
+                stringBuilder.append(r).append(" ");
+            }
+            stringBuilder.append("\n");
 
             return;
         }
 
         for (int i = current; i < n; i++) {
-            int lengthBeforeAdd = stringBuilder.length(); // 숫자를 추가하기 전의 길이 저장
-            stringBuilder.append(numbers[i]).append(" ");
-            dfs(i, depth + 1); // 다음 깊이로 탐색 (i를 current 자리에 넣어야 중복 허용)
-            stringBuilder.setLength(lengthBeforeAdd); // 저장된 길이로 다시 설정하여 정확히 제거
+            res[depth] = numbers[i];
+
+            dfs(i, depth + 1);
+
         }
-
-
     }
 }
