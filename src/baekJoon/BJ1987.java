@@ -8,8 +8,10 @@ public class BJ1987 {
 
     static int r, c;
     static int[][] map;
-    static boolean[] visited;
+    static boolean[] visited = new boolean[26];
     static int res = 0;
+    static int[] dx = {1, -1, 0, 0};
+    static int[] dy = {0, 0, 1, -1};
 
     public static void main(String[] args) throws IOException {
 
@@ -19,7 +21,6 @@ public class BJ1987 {
         c = Integer.parseInt(rc[1]);
 
         map = new int[r + 1][c + 1];
-        visited = new boolean[26];
 
         for (int i = 1; i <= r; i++) {
             String input = bufferedReader.readLine();
@@ -38,18 +39,17 @@ public class BJ1987 {
     private static void dfs(int x, int y, int cost) {
         res = Math.max(res, cost);
 
-        int[] dx = {1, -1, 0, 0};
-        int[] dy = {0, 0, 1, -1};
 
         for (int i = 0; i < 4; i++) {
             int nextX = x + dx[i];
             int nextY = y + dy[i];
 
             if (0 < nextX && nextX <= r && 0 < nextY && nextY <= c) {
-                if (!visited[map[nextX][nextY]]) {
-                    visited[map[nextX][nextY]] = true;
+                int next = map[nextX][nextY];
+                if (!visited[next]) {
+                    visited[next] = true;
                     dfs(nextX, nextY, cost + 1);
-                    visited[map[nextX][nextY]] = false;
+                    visited[next] = false;
                 }
             }
 
