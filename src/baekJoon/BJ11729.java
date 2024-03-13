@@ -22,7 +22,7 @@ public class BJ11729 {
         System.out.println(count);
         System.out.println(stringBuilder);
 
-        System.out.println(checker);
+//        System.out.println(checker);
 
     }
 
