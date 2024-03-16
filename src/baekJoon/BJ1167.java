@@ -36,48 +36,30 @@ public class BJ1167 {
 
         adjList = new ArrayList<>();
 
-        adjList.add(0, new ArrayList<>()); // 0번 채우기
+        for (int i = 0; i <= n; i++) {
+            adjList.add(new ArrayList<>());
+        }
 
         for (int i = 1; i <= n; i++) {
             StringTokenizer stringTokenizer = new StringTokenizer(bufferedReader.readLine(), " ");
-            List<Edge> edges = new ArrayList<>();
 
             int current = Integer.parseInt(stringTokenizer.nextToken());
 
             while (true) {
                 int node = Integer.parseInt(stringTokenizer.nextToken());
                 if (node == -1) {
-                    adjList.add(current, edges);
                     break;
                 }
                 int dist = Integer.parseInt(stringTokenizer.nextToken());
-                edges.add(new Edge(node, dist));
+                adjList.get(current).add(new Edge(node, dist));
             }
         }
 
 
-//        int idx = 0;
-//        for (List<Edge> edges : adjList) {
-//            System.out.print(idx);
-//            System.out.print(": ");
-//
-//            for (Edge edge : edges) {
-//                System.out.print(edge.target);
-//                System.out.print(" ");
-//                System.out.print(edge.distance);
-//                System.out.print("    ");
-//            }
-//            idx++;
-//            System.out.println();
-//        }
 
 
         NodeState foundNode = bfs(1);
-//        System.out.println(foundNode.currentPosition);
-//        System.out.println(foundNode.accumulatedDistance);
-//
         NodeState resNode = bfs(foundNode.currentPosition);
-//        System.out.println(resNode.currentPosition);
         System.out.println(resNode.accumulatedDistance);
 
 
@@ -103,10 +85,6 @@ public class BJ1167 {
                     queue.offer(nextNode);
                     if (farthestNode.accumulatedDistance < nextNode.accumulatedDistance) {
                         farthestNode = nextNode;
-
-//                        System.out.println("debug");
-//                        System.out.println(farthestNode.currentPosition);
-//                        System.out.println(farthestNode.accumulatedDistance);
                     }
                 }
             }
