@@ -63,6 +63,7 @@ public class 전력망을둘로나누기 {
                     }
                 }
                 answer = Math.min(answer, Math.abs(count * 2 - n));
+                // if answer == 0 return 0;
 
                 adjList.get(ignoreWS).add(ignoreWE);
                 adjList.get(ignoreWE).add(ignoreWS);
