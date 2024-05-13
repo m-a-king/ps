@@ -77,6 +77,9 @@ public class 이중우선순위큐 {
                 System.out.println(entry);
             }
 
+            System.out.println(max);
+            System.out.println(min);
+
             answer = new int[]{max, min};
 
             return answer;
@@ -105,6 +108,7 @@ public class 이중우선순위큐 {
                 int poll = pq.poll();
 
                 // dequeue 값이 해시맵에서 확인했을 떄, 1개 이상이라면 1을 뺀다.
+                // 1개 이상이라는 것은 유효한 데이터라는 것, 1개 이상이 아니였다면 이는 이미 삭제된 값이므로 반복해야함.
                 // 0개 일때는 빼면 안됨! -> 무시해야하는 연산이므로..
                 if (inputHMap.get(poll) > 0) {
                     inputHMap.put(poll, inputHMap.get(poll) - 1);
