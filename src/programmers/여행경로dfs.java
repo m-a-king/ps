@@ -7,7 +7,9 @@ public class 여행경로dfs {
     static class Solution {
 
         public static void main(String[] args) {
-            System.out.println(Arrays.toString(solution(new String[][]{{"ICN", "D"}, {"D", "ICN"}, {"ICN", "B"}})));
+            String[][] param = {{"ICN", "COO"}, {"ICN", "BOO"}, {"COO", "ICN"}, {"BOO", "DOO"}};
+
+            System.out.println(Arrays.toString(solution(param)));
         }
 
         static HashMap<String, PriorityQueue<String>> pathMap = new HashMap<>();
@@ -21,7 +23,8 @@ public class 여행경로dfs {
                 pathMap.get(ticket[0]).offer(ticket[1]);
             }
 
-            dfs("ICN");
+            int asd=0;
+            dfs("ICN",asd);
 
             for (int i = 0; i < answer.length; i++) {
                 answer[i] = route.get(i);
@@ -30,14 +33,23 @@ public class 여행경로dfs {
             return answer;
         }
 
-        private static void dfs(String departure) {
+        private static void dfs(String departure,int i) {
+            System.out.println("dfs 호출" + i+"번째");
             PriorityQueue<String> arrivals = pathMap.get(departure);
+            System.out.println("departure = " + departure);
+            System.out.println("arrivals = " + arrivals);
+            System.out.println();
 
             while (arrivals != null && !arrivals.isEmpty()) {
-                dfs(arrivals.poll());
+                String poll = arrivals.poll();
+                dfs(poll, i+1);
+                System.out.println("poll = " + poll);
+                System.out.println();
             }
 
             route.addFirst(departure);
+            System.out.println("추가한다 "+ i+"번째 dfs임 " + departure);
+            System.out.println();
         }
     }
 }
