@@ -89,6 +89,8 @@ public class SortIdentifier {
         int accuracy = 0;
         String pivot = original[0];  // 피봇은 오리지날 배열의 첫번째 값으로 설정
 
+
+
         boolean isPivotValid = true;
         for (int i = 0; i < midState.length; i++) {
             if (midState[i].equals(pivot)) {
