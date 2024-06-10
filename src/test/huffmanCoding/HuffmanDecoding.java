@@ -6,6 +6,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class HuffmanDecoding {
 
@@ -13,16 +14,14 @@ public class HuffmanDecoding {
     static Map<String, Character> huffmanCodes = new HashMap<>();
 
     public static void main(String[] args) {
-        String filePath = "/Users/making/IdeaProjects/ps/src/test/huffmanCoding/encodedText.txt";  // 텍스트 파일 경로
-        String text = readFile(filePath);
-        if (text == null) {
-            System.out.println("File content is NULL");
-            return;
-        }
+        String filePath = "src/test/huffmanCoding/encodedText.txt";  // 텍스트 파일 경로
+        String text = Objects.requireNonNull(readFile(filePath)).trim();
 
+        System.out.println();
         System.out.println(">>>>>>>>>> ENCODED TEXT START <<<<<<<<<<");
-        System.out.print(text);
+        System.out.println(text);
         System.out.println(">>>>>>>>>>> ENCODED TEXT END <<<<<<<<<<<");
+        System.out.println();
 
         // 헤더와 인코딩된 텍스트 분리
         String[] parts = text.split("\n", 2);
@@ -33,12 +32,14 @@ public class HuffmanDecoding {
 
         String decodedText = decodeText(encodedText); // == originalText
 
+        System.out.println();
         System.out.println(">>>>>>>>>> DECODED TEXT START <<<<<<<<<<");
         System.out.println(decodedText);
         System.out.println(">>>>>>>>>>> DECODED TEXT END <<<<<<<<<<<");
+        System.out.println();
 
         // 디코딩된 텍스트를 파일에 작성
-        String outputFilePath = "/Users/making/IdeaProjects/ps/src/test/huffmanCoding/decodedText.txt"; // 출력 파일 경로 설정
+        String outputFilePath = "src/test/huffmanCoding/decodedText.txt"; // 출력 파일 경로 설정
         writeFile(outputFilePath, decodedText);
     }
 

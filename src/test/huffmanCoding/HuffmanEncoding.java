@@ -1,11 +1,9 @@
 package test.huffmanCoding;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.PriorityQueue;
 
 public class HuffmanEncoding {
@@ -46,15 +44,13 @@ public class HuffmanEncoding {
 
     public static void main(String[] args) {
         String filePath = "/Users/making/IdeaProjects/ps/src/test/huffmanCoding/originalText.txt";  // 텍스트 파일 경로
-        String text = readFile(filePath);
-        if (text == null) {
-            System.out.println("File content is NULL");
-            return;
-        }
+        String originalText = Objects.requireNonNull(readFile(filePath)).trim();
 
+        System.out.println();
         System.out.println(">>>>>>>>>> ORIGINAL TEXT START <<<<<<<<<<");
-        System.out.print(text);
+        System.out.println(originalText);
         System.out.println(">>>>>>>>>>> ORIGINAL TEXT END <<<<<<<<<<<");
+        System.out.println();
 
         // 허프만 코딩 시작
         // 알파벳 개수만큼의 배열 선언 (소문자만 존재함을 가정)
@@ -63,8 +59,8 @@ public class HuffmanEncoding {
         // 허프만 코딩, 그리디 알고리즘 -> 우선순위큐 (오름차순, 빈도수가 적은 것 부터)
         PriorityQueue<AlpStatus> pq = new PriorityQueue<>();
 
-        for (int i = 0; i < text.length(); i++) {
-            char currentChar = text.charAt(i);
+        for (int i = 0; i < originalText.length(); i++) {
+            char currentChar = originalText.charAt(i);
 
             // 소문자만 존재함을 가정
             if (currentChar >= 'a' && currentChar <= 'z') {
@@ -82,7 +78,7 @@ public class HuffmanEncoding {
 
         // 큐가 비어있을 경우 예외 처리
         if (pq.isEmpty()) {
-            System.out.println("No lowercase alphabet characters in text.");
+            System.out.println("No lowercase alphabet characters in originalText.");
             return;
         }
 
@@ -103,7 +99,7 @@ public class HuffmanEncoding {
 
         // 입력 텍스트를 허프만 코드로 암호화
         StringBuilder encodedText = new StringBuilder();
-        for (char c : text.toCharArray()) {
+        for (char c : originalText.toCharArray()) {
             if (c >= 'a' && c <= 'z') {
                 encodedText.append(huffmanCodes.get(c));
             }
@@ -115,10 +111,30 @@ public class HuffmanEncoding {
                 "encodedText = " + encodedText;
 
 
+        System.out.println();
+        System.out.println(">>>>>>>>>> ENCODED TEXT START <<<<<<<<<<");
+        System.out.println(content);
+        System.out.println(">>>>>>>>>>> ENCODED TEXT END <<<<<<<<<<<");
+        System.out.println();
+
+
         // 인코딩된 텍스트를 파일에 작성
         String outputFilePath = "/Users/making/IdeaProjects/ps/src/test/huffmanCoding/encodedText.txt"; // 출력 파일 경로 설정
         writeFile(outputFilePath, content);
 
+        // 파일 크기 비교
+        long originalFileSize = getFileSize(filePath) * 8;
+        long encodedFileSize = getFileSize(outputFilePath);
+
+        System.out.println("Original file size: " + originalFileSize);
+        System.out.println("Encoded file size: " + encodedFileSize);
+
+        // 압축률 계산
+        double compressionRatio = (double) encodedFileSize / originalFileSize * 100;
+        double compressionFactor = 100 - compressionRatio;
+
+        System.out.println("Compression Ratio: " + String.format("%.2f", compressionRatio) + "%");
+        System.out.println("Compression Factor: " + String.format("%.2f", compressionFactor) + "%");
     }
 
     private static void generateCodes(AlpStatus node, String code) {
@@ -158,5 +174,10 @@ public class HuffmanEncoding {
         } catch (IOException e) {
             System.err.println("Error writing to file: " + e.getMessage());
         }
+    }
+
+    private static long getFileSize(String filePath) {
+        File file = new File(filePath);
+        return file.length();
     }
 }
