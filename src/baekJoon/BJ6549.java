@@ -18,7 +18,7 @@ public class BJ6549 {
 
             int n = Integer.parseInt(stringTokenizer.nextToken());
             if (n == 0) {
-                return;
+                return; // 종료
             }
 
             heights = new long[n];
