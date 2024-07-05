@@ -23,30 +23,36 @@ public class BJ1300 {
         long mid = 0;
         long count = 0;
 
-        while (start < end) {
+        while (start <= end) {
             mid = (start + end) / 2; // 이분탐색 기준 (짐작하는 b[k] 값)
+
+            if (start == end) {
+                return mid;
+            }
+
             count = countSmallNum(mid);
 
-
-            // 카운트가 찾으려는 k번째 인덱스와 같거나
-            // 카운트가 찾으려는 k번째 인덱스를 넘어섬
+            // b 배열에서 현재 mid 이하인 값의 개수가 찾고 있는 k 이상일때
             if (count >= k) {
-                end = mid; // 짐작하는 값을 작
-            } else {
-                start = mid + 1; // 짐작하는 값을 크게}
+                end = mid; // 짐작하는 값을 작게
+            }
+
+            // b 배열에서 현재 mid 이하인 값의 개수가 찾고 있는 k 미만
+            else {
+                start = mid + 1; // 짐작하는 값을 크게
             }
 
         }
 
-        return start;
+        return mid;
     }
 
     // 주어진 mid(limit)을 기준으로
     // 전체 배열에서 그 수까지의 개수
     private static long countSmallNum(long limit) {
         long count = 0;
+        long tempLimit = 0;
 
-//        long tempLimit = 0;
 //        for (int i = 1; i <= n; i++) {
 //            tempLimit = Math.min(n * i, limit);
 //            count += tempLimit / i;
@@ -59,14 +65,3 @@ public class BJ1300 {
         return count;
     }
 }
-
-// 3
-// 7
-
-// 1  2  3  4  5  6
-// 2  4  6  8 10 12
-// 3  6  9 12 15 18
-// 4  8 12 16 20 24
-// 5 10 15 20 25 30
-// 6 12 18 24 30 36
-
