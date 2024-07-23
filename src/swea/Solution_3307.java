@@ -28,9 +28,8 @@ public class Solution_3307 {
 //                System.out.println();
 
                 int currNum = Integer.parseInt(stringTokenizer.nextToken());
-                if (LIS[tailIdx] < currNum) {
-                    LIS[++tailIdx] = currNum;
-                } else {
+                if (LIS[tailIdx] < currNum) LIS[++tailIdx] = currNum;
+                else {
                     int start = 0;
                     int end = tailIdx;
                     int mid = 0;
