@@ -33,7 +33,7 @@ public class BJ2636 {
         while (true) {
             boolean[][] visited = new boolean[rows][cols];
             Queue<int[]> queue = new ArrayDeque<>();
-            queue.offer(new int[]{0, 0});
+            queue.offer(new int[]{0, 0}); // 테두리는 다 비어있어서 가능
             visited[0][0] = true;
 
             while (!queue.isEmpty()) {
@@ -46,8 +46,8 @@ public class BJ2636 {
                     int ny = y + dy[d];
 
                     if (nx >= 0 && nx < rows && ny >= 0 && ny < cols && !visited[nx][ny]) {
-                        visited[nx][ny] = true;
-                        if (map[nx][ny] == 0) queue.offer(new int[]{nx, ny});
+                        visited[nx][ny] = true; // 공기 묻히기
+                        if (map[nx][ny] == 0) queue.offer(new int[]{nx, ny}); // 공기에 공기 묻히면 공기는 더 퍼진다
                     }
                 }
             }
