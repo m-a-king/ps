@@ -18,6 +18,7 @@ public class BJ2961 {
     static Food[] foods;
     static int n;
     static int minDiff = Integer.MAX_VALUE;
+
     public static void main(String[] args) throws IOException {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         n = Integer.parseInt(bufferedReader.readLine());
@@ -30,24 +31,24 @@ public class BJ2961 {
             foods[i] = new Food(sour, bitter);
         }
 
-        select(0, 1, 0, 0);
 
-        System.out.println(minDiff);
+        int totalCombinations = 1 << n; // 2^n 조합
 
-    }
+        for (int i = 1; i < totalCombinations; i++) {
+            int totalSour = 1;
+            int totalBitter = 0;
 
-    private static void select(int depth, int totalSour, int totalBitter, int selectCnt) {
-        if (depth == n) {
-            if (selectCnt > 0) {
-                int diff = Math.abs(totalSour - totalBitter);
-                minDiff = Math.min(diff, minDiff);
+            // 비트마스킹을 사용하여 모든 조합 탐색
+            for (int j = 0; j < n; j++) {
+                if ((i & (1 << j)) > 0) {
+                    totalSour *= foods[j].sour;
+                    totalBitter += foods[j].bitter;
+                }
             }
-            return;
+            int diff = Math.abs(totalSour - totalBitter);
+            minDiff = Math.min(diff, minDiff);
         }
 
-
-        select(depth + 1, totalSour * foods[depth].sour, totalBitter + foods[depth].bitter, selectCnt+1);
-        select(depth + 1, totalSour, totalBitter,selectCnt);
-
+        System.out.println(minDiff);
     }
 }
