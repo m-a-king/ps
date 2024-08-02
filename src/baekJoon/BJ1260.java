@@ -1,82 +1,80 @@
 package baekJoon;
 
-import java.awt.image.AreaAveragingScaleFilter;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.*;
 
-import static java.lang.Integer.parseInt;
-
 public class BJ1260 {
+    static List<List<Integer>> adjList = new ArrayList<>();
+    static StringBuilder stringBuilder = new StringBuilder();
+    static int n, m;
+    static boolean[] visited;
+
+
 
     public static void main(String[] args) throws IOException {
-
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
-        int[] input = Arrays.stream(bufferedReader.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+        StringTokenizer stringTokenizer = new StringTokenizer(bufferedReader.readLine(), " ");
 
-        int nVertex = input[0];
-        int nEdge = input[1];
-        int start = input[2];
+        n = Integer.parseInt(stringTokenizer.nextToken());
+        m = Integer.parseInt(stringTokenizer.nextToken());
+        int start = Integer.parseInt(stringTokenizer.nextToken());
 
-        Map<Integer, List<Integer>> graph = new HashMap<>();
-
-        for (int i = 0; i < nEdge; i++) {
-            String[] input2 = bufferedReader.readLine().split(" ");
-            int s = parseInt(input2[0]);
-            int e = parseInt(input2[1]);
-
-            List<Integer> list = graph.getOrDefault(s, new ArrayList<>());
-            list.add(e);
-            graph.put(s, list);
-
-            list = graph.getOrDefault(e, new ArrayList<>());
-            list.add(s);
-            graph.put(e, list);
+        for (int i = 0; i <= n; i++) {
+            adjList.add(new ArrayList<>());
         }
 
-        for (int vertex : graph.keySet()) {
-            Collections.sort(graph.get(vertex));
+        for (int i = 0; i < m; i++) {
+            stringTokenizer = new StringTokenizer(bufferedReader.readLine(), " ");
+            int from = Integer.parseInt(stringTokenizer.nextToken());
+            int to = Integer.parseInt(stringTokenizer.nextToken());
+            adjList.get(from).add(to);
+            adjList.get(to).add(from);
         }
 
-        boolean[] visited = new boolean[nVertex + 1];
+        for (List<Integer> adj : adjList) {
+            adj.sort(Comparator.naturalOrder());
+        }
 
-        dfs(graph, start, visited);
-        System.out.println();
-        Arrays.fill(visited, false);
+        visited = new boolean[n + 1];
+        dfs(start);
 
-        bfs(graph, start, visited);
+        stringBuilder.append("\n");
 
+        visited = new boolean[n + 1];
+        bfs(start);
+
+        System.out.println(stringBuilder);
     }
 
-    private static void bfs(Map<Integer, List<Integer>> graph, int vertex, boolean[] visited) {
+    private static void dfs(int curr) {
+        visited[curr] = true;
+        stringBuilder.append(curr).append(" ");
+
+        for (int next : adjList.get(curr)) {
+            if (visited[next]) continue;
+            visited[next] = true;
+            dfs(next);
+        }
+    }
+
+    private static void bfs(int start) {
         Queue<Integer> queue = new ArrayDeque<>();
-        queue.add(vertex);
-        visited[vertex] = true;
+        queue.offer(start);
+        stringBuilder.append(start).append(" ");
+        visited[start] = true;
 
         while (!queue.isEmpty()) {
-            Integer now = queue.poll();
-            System.out.print(now + " ");
-            List<Integer> neighbors = graph.getOrDefault(now, new ArrayList<>());
-
-            for (Integer neighbor : neighbors) {
-                if (!visited[neighbor]) {
-                    visited[neighbor] = true;
-                    queue.add(neighbor);
-                }
+            Integer curr = queue.poll();
+            for (int next : adjList.get(curr)) {
+                if (visited[next]) continue;
+                visited[next] = true;
+                queue.offer(next);
+                stringBuilder.append(next).append(" ");
             }
         }
     }
 
-    private static void dfs(Map<Integer, List<Integer>> graph, int vertex, boolean[] visited) {
-        visited[vertex] = true;
-        System.out.print(vertex + " ");
 
-        List<Integer> neighbors = graph.getOrDefault(vertex, new ArrayList<>());
-        for (int neighbor : neighbors) {
-            if (!visited[neighbor]) {
-                dfs(graph, neighbor, visited);
-            }
-        }
-    }
 }
