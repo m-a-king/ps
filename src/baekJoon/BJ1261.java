@@ -1,28 +1,23 @@
+package baekJoon;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.PriorityQueue;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.StringTokenizer;
 
-public class Main {
+public class BJ1261 {
 
-    private static class State implements Comparable<State> {
-        int row, col, moveCnt, breakCnt;
+    private static class State {
+        int row, col, breakCnt;
 
-        public State(int row, int col, int moveCnt, int breakCnt) {
+        public State(int row, int col, int breakCnt) {
             this.row = row;
             this.col = col;
-            this.moveCnt = moveCnt;
             this.breakCnt = breakCnt;
         }
 
-        @Override
-        public int compareTo(State o) {
-            if (this.breakCnt == o.breakCnt) {
-                return o.moveCnt - this.moveCnt;
-            }
-            return this.breakCnt - o.breakCnt;
-        }
     }
 
     static int[] dx = {-1, 1, 0, 0};
@@ -46,9 +41,9 @@ public class Main {
             }
         }
 
-        PriorityQueue<State> pq = new PriorityQueue<>();
+        Deque<State> pq = new ArrayDeque<>();
         boolean[][] visited = new boolean[row + 1][col + 1];
-        pq.offer(new State(1, 1, 0, 0));
+        pq.offer(new State(1, 1, 0));
         visited[1][1] = true;
 
         while (!pq.isEmpty()) {
@@ -69,9 +64,9 @@ public class Main {
                 visited[nRow][nCol] = true;
 
                 if (isWall[nRow][nCol]) {
-                    pq.offer(new State(nRow, nCol, curr.moveCnt + 1, curr.breakCnt + 1));
+                    pq.offerLast(new State(nRow, nCol, curr.breakCnt + 1));
                 } else {
-                    pq.offer(new State(nRow, nCol, curr.moveCnt + 1, curr.breakCnt));
+                    pq.offerFirst(new State(nRow, nCol, curr.breakCnt));
                 }
 
             }
