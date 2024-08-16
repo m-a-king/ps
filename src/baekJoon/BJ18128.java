@@ -41,11 +41,6 @@ public class BJ18128 {
         boolean[][] isRock = new boolean[n][n];
 
         int[][] weightMap = new int[n][n];
-        for (int i = 1; i < n; i++) {
-            for (int j = 1; j < n; j++) {
-                weightMap[i][j] = 9;
-            }
-        }
 
         PriorityQueue<Pos> pq = new PriorityQueue<>();
         boolean[][] visited = new boolean[n][n];
