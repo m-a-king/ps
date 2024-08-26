@@ -18,16 +18,16 @@ public class BJ31932_2 {
 
     }
 
-    private static class Mover implements Comparable<Mover> {
+    private static class Bear implements Comparable<Bear> {
         int pos, time;
 
-        public Mover(int pos, int time) {
+        public Bear(int pos, int time) {
             this.pos = pos;
             this.time = time;
         }
 
         @Override
-        public int compareTo(Mover o) {
+        public int compareTo(Bear o) {
             return this.time - o.time;
         }
     }
@@ -60,15 +60,18 @@ public class BJ31932_2 {
             graph.get(v).add(new Edge(u, d, t));
         }
 
-        int maxFish = 0;
 
         int start = 0; // 최소 물고기
         int end = 0;// 최대 물고기
 
+        // 1번 노드와 인접한 간선 모두를 탐색하며 가장 늦게 출발할 수 있는 시간 검색
         for (Edge edge : graph.get(1)) {
             end = Math.max(end, edge.breakTime - edge.dist); // 최대 물고기
         }
 
+
+        // 1번 노드에서 사냥할 수 있는 최대 시간이 0초라면?
+        // 도착 가능 여부 검사
         if (end == 0) {
             if (dijkstra(0)) {
                 System.out.println(0);
@@ -79,13 +82,12 @@ public class BJ31932_2 {
             return;
         }
 
+        // 이분탐색
         while (start <= end) {
             int mid = (start + end) / 2;
-            if (maxFish > mid) {
-                start = mid + 1;
-                continue;
-            }
 
+            // 조건을 만족한다면?
+            // 더 큰 값을 탐색하도록.
             if (dijkstra(mid)) {
                 start = mid + 1;
             } else {
@@ -98,26 +100,26 @@ public class BJ31932_2 {
     }
 
     private static boolean dijkstra(int huntTime) {
-        PriorityQueue<Mover> pq = new PriorityQueue<>();
-        long[] bestRecord = new long[n + 1];  // 각 노드에 도달할 때의 최적 시간을 저장하는 배열
-        Arrays.fill(bestRecord, Long.MAX_VALUE);  // 초기값
+        PriorityQueue<Bear> pq = new PriorityQueue<>();
+        int[] bestRecord = new int[n + 1];  // 각 노드에 도달할 때의 최적 시간을 저장하는 배열
+        Arrays.fill(bestRecord, Integer.MAX_VALUE);  // 초기값
 
-        pq.offer(new Mover(1, huntTime));
-        bestRecord[1] = huntTime;  // 출발 지점에서의 초기 시간을 설정
+        pq.offer(new Bear(1, huntTime));
+        bestRecord[1] = huntTime;  // 출발 지점 초기 시간을 설정
 
         while (!pq.isEmpty()) {
-            Mover curr = pq.poll();
+            Bear curr = pq.poll();
 
             // 이미 최적의 시간으로 방문한 노드라면 스킵
             if (curr.time > bestRecord[curr.pos]) continue;
 
-            // 목적지에 도달한 경우
+            // 목적지에 도달
             if (curr.pos == n) {
                 return true;
             }
 
             for (Edge nextEdge : graph.get(curr.pos)) {
-                long newTime = curr.time + nextEdge.dist;
+                int newTime = curr.time + nextEdge.dist;
 
                 // 다리가 무너지기 전에 도착할 수 없는 경우 스킵
                 if (nextEdge.breakTime < newTime) continue;
@@ -125,10 +127,12 @@ public class BJ31932_2 {
                 // 더 최적의 시간으로 도달할 수 있는 경우에만 업데이트하고 큐에 넣음
                 if (newTime < bestRecord[nextEdge.to]) {
                     bestRecord[nextEdge.to] = newTime;
-                    pq.offer(new Mover(nextEdge.to, (int) newTime));
+                    pq.offer(new Bear(nextEdge.to, newTime));
                 }
             }
         }
+
+        // 목적지 도달 실패
         return false;
     }
 
