@@ -63,13 +63,19 @@ public class BJ17070 {
             // 현재 파이프의 형태가 가로(1)일 때
             if (currShape == 1) {
                 // 가로로 이동
-                if (currCol + 1 <= n && map[currRow][currCol + 1] == 0 && (visited[currRow][currCol + 1] & (1 << 0)) == 0) {
+                if (currCol + 1 <= n
+                        && map[currRow][currCol + 1] == 0
+                        && (visited[currRow][currCol + 1] & (1 << 0)) == 0) {
                     visited[currRow][currCol + 1] |= (1 << 0); // 가로로 이동한 상태를 비트로 설정
                     queue.offer(new Pipe(currRow, currCol + 1, 1));
                 }
 
                 // 대각선으로 이동
-                if (currRow + 1 <= n && currCol + 1 <= n && map[currRow + 1][currCol] == 0 && map[currRow][currCol + 1] == 0 && map[currRow + 1][currCol + 1] == 0 && (visited[currRow + 1][currCol + 1] & (1 << 1)) == 0) {
+                if (currRow + 1 <= n && currCol + 1 <= n
+                        && map[currRow + 1][currCol] == 0
+                        && map[currRow][currCol + 1] == 0
+                        && map[currRow + 1][currCol + 1] == 0
+                        && (visited[currRow + 1][currCol + 1] & (1 << 1)) == 0) {
                     visited[currRow + 1][currCol + 1] |= (1 << 1); // 대각선으로 이동한 상태를 비트로 설정
                     queue.offer(new Pipe(currRow + 1, currCol + 1, 3));
                 }
@@ -78,13 +84,19 @@ public class BJ17070 {
             // 현재 파이프의 형태가 세로(2)일 때
             if (currShape == 2) {
                 // 세로로 이동
-                if (currRow + 1 <= n && map[currRow + 1][currCol] == 0 && (visited[currRow + 1][currCol] & (1 << 2)) == 0) {
+                if (currRow + 1 <= n
+                        && map[currRow + 1][currCol] == 0
+                        && (visited[currRow + 1][currCol] & (1 << 2)) == 0) {
                     visited[currRow + 1][currCol] |= (1 << 2); // 세로로 이동한 상태를 비트로 설정
                     queue.offer(new Pipe(currRow + 1, currCol, 2));
                 }
 
                 // 대각선으로 이동
-                if (currRow + 1 <= n && currCol + 1 <= n && map[currRow + 1][currCol] == 0 && map[currRow][currCol + 1] == 0 && map[currRow + 1][currCol + 1] == 0 && (visited[currRow + 1][currCol + 1] & (1 << 3)) == 0) {
+                if (currRow + 1 <= n && currCol + 1 <= n
+                        && map[currRow + 1][currCol] == 0
+                        && map[currRow][currCol + 1] == 0
+                        && map[currRow + 1][currCol + 1] == 0
+                        && (visited[currRow + 1][currCol + 1] & (1 << 3)) == 0) {
                     visited[currRow + 1][currCol + 1] |= (1 << 3); // 대각선으로 이동한 상태를 비트로 설정
                     queue.offer(new Pipe(currRow + 1, currCol + 1, 3));
                 }
@@ -93,19 +105,27 @@ public class BJ17070 {
             // 현재 파이프의 형태가 대각선(3)일 때
             if (currShape == 3) {
                 // 가로로 이동
-                if (currCol + 1 <= n && map[currRow][currCol + 1] == 0 && (visited[currRow][currCol + 1] & (1 << 4)) == 0) {
+                if (currCol + 1 <= n
+                        && map[currRow][currCol + 1] == 0
+                        && (visited[currRow][currCol + 1] & (1 << 4)) == 0) {
                     visited[currRow][currCol + 1] |= (1 << 4); // 가로로 이동한 상태를 비트로 설정
                     queue.offer(new Pipe(currRow, currCol + 1, 1));
                 }
 
                 // 세로로 이동
-                if (currRow + 1 <= n && map[currRow + 1][currCol] == 0 && (visited[currRow + 1][currCol] & (1 << 5)) == 0) {
+                if (currRow + 1 <= n
+                        && map[currRow + 1][currCol] == 0
+                        && (visited[currRow + 1][currCol] & (1 << 5)) == 0) {
                     visited[currRow + 1][currCol] |= (1 << 5); // 세로로 이동한 상태를 비트로 설정
                     queue.offer(new Pipe(currRow + 1, currCol, 2));
                 }
 
                 // 대각선으로 이동
-                if (currRow + 1 <= n && currCol + 1 <= n && map[currRow + 1][currCol] == 0 && map[currRow][currCol + 1] == 0 && map[currRow + 1][currCol + 1] == 0 && (visited[currRow + 1][currCol + 1] & (1 << 6)) == 0) {
+                if (currRow + 1 <= n && currCol + 1 <= n
+                        && map[currRow + 1][currCol] == 0
+                        && map[currRow][currCol + 1] == 0
+                        && map[currRow + 1][currCol + 1] == 0
+                        && (visited[currRow + 1][currCol + 1] & (1 << 6)) == 0) {
                     visited[currRow + 1][currCol + 1] |= (1 << 6); // 대각선으로 이동한 상태를 비트로 설정
                     queue.offer(new Pipe(currRow + 1, currCol + 1, 3));
                 }
