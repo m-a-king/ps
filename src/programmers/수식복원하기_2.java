@@ -9,187 +9,196 @@ public class 수식복원하기_2 {
         String[] expressions = {
                 "1 + 5 = 10",
                 "23 + 12 = X",
-                "55 + 31 = X",  // 올림 발생
-                "52 - 15 = X",
-                "53 - 24 = X"  // 빌림 발생
+                "55 + 31 = X",  // 올림 발생 (Carry occurs)
+                "52 - 11 = X",
+                "53 - 24 = X"   // 빌림 발생 (Borrow occurs)
         };
         String[] solution = solution(expressions);
 
-        System.out.println(definiteDigit);
+        System.out.println(confirmedBase);  // 확정된 진수 출력
 
         for (String expr : solution) {
-            System.out.println(expr);
+            System.out.println(expr);  // 결과 출력
         }
 
     }
 
-    static int guessLowerDigit = 2;
-    static int definiteDigit = -1;
-    static boolean[] visited;
-    static String[] answer;
-    static int answerIdx = 0;
+    static int estimatedMinimumBase = 2;   // 추정한 최소 진수 (Initially guessed minimum base)
+    static int confirmedBase = -1;         // 확정된 진수 (-1이면 아직 확정되지 않음)
+    static boolean[] isVisited;            // 이미 처리된 표현식 표시 (Indicates if an expression has been processed)
+    static String[] resultExpressions;     // 결과를 저장할 배열 (Array to store the results)
+    static int resultIndex = 0;            // 결과 배열의 인덱스 (Index for the result array)
 
     public static String[] solution(String[] expressions) {
-        answer = new String[expressions.length];
-        visited = new boolean[expressions.length];
+        resultExpressions = new String[expressions.length];
+        isVisited = new boolean[expressions.length];
 
+        // 각 표현식을 검사하여 진수를 추정하고 확정된 진수를 찾는다.
         for (int i = 0; i < expressions.length; i++) {
-            String exp = expressions[i];
-            String[] tokens = exp.split(" ");
+            String expression = expressions[i];
+            String[] tokens = expression.split(" ");
 
-            int a = Integer.parseInt(tokens[0]);
-            String operator = tokens[1];
-            int b = Integer.parseInt(tokens[2]);
-            String res = tokens[4];
+            int operandA = Integer.parseInt(tokens[0]);    // 첫 번째 피연산자
+            String operator = tokens[1];                   // 연산자 (+ 또는 -)
+            int operandB = Integer.parseInt(tokens[2]);    // 두 번째 피연산자
+            String resultStr = tokens[4];                  // 결과 (또는 'X')
 
-            int a_1 = a % 10;
-            int a_2 = a / 10;
+            // 각 숫자의 일의 자리와 십의 자리 추출
+            int aUnitsDigit = operandA % 10;   // operandA의 일의 자리
+            int aTensDigit = operandA / 10;    // operandA의 십의 자리
 
-            int b_1 = b % 10;
-            int b_2 = b / 10;
+            int bUnitsDigit = operandB % 10;   // operandB의 일의 자리
+            int bTensDigit = operandB / 10;    // operandB의 십의 자리
 
-            int currMaxDigit = Math.max(Math.max(a_1, a_2), Math.max(b_1, b_2));
+            // 현재 표현식에서의 최대 자릿수 구하기
+            int currentMaxDigit = Math.max(Math.max(aUnitsDigit, aTensDigit), Math.max(bUnitsDigit, bTensDigit));
 
-            guessLowerDigit = Math.max(currMaxDigit + 1, guessLowerDigit);
+            // 추정한 최소 진수를 갱신 (현재 최대 자릿수 + 1과 기존 추정 값 중 큰 값)
+            estimatedMinimumBase = Math.max(currentMaxDigit + 1, estimatedMinimumBase);
 
-            if (res.equals("X")) continue;
-            visited[i] = true;
-            int intRes = Integer.parseInt(res);
-            int res_1 = intRes % 10;
-            int res_2 = intRes % 100 / 10;
-            int res_3 = intRes / 100;
+            if (resultStr.equals("X")) continue;  // 결과가 'X'이면 다음으로
+            isVisited[i] = true;  // 결과가 있는 표현식은 방문 표시
+            int resultValue = Integer.parseInt(resultStr);     // 결과를 정수로 변환
+            int resUnitsDigit = resultValue % 10;              // 결과의 일의 자리
+            int resTensDigit = (resultValue % 100) / 10;       // 결과의 십의 자리
+            int resHundredsDigit = resultValue / 100;          // 결과의 백의 자리
 
-            guessLowerDigit = Math.max(guessLowerDigit, Math.max(res_1, res_2) + 1);
+            // 결과의 최대 자릿수에 따라 추정한 최소 진수를 갱신
+            estimatedMinimumBase = Math.max(estimatedMinimumBase, Math.max(resUnitsDigit, resTensDigit) + 1);
 
             if (operator.equals("+")) {
-                // 13 + 14 -> real 32 expect 27 real 30 expect 27
-                int expect = a_1 + b_1;
-                int diff = expect - res_1;
-                int temp = diff == 0 ? 0 : 1;
+                // 덧셈에서 올림을 고려하여 확정된 진수를 찾는다.
+                int expectedSum = aUnitsDigit + bUnitsDigit;       // 일의 자리 예상 합
+                int difference = expectedSum - resUnitsDigit;      // 예상 합과 실제 결과의 차이
+                int carry = difference == 0 ? 0 : 1;               // 올림 발생 여부 (0: 없음, 1: 발생)
 
-                if (temp == 1) {
-                    definiteDigit = diff;
+                if (carry == 1) {
+                    confirmedBase = difference;  // 차이가 진수와 관련되므로 확정된 진수 설정
                     break;
                 }
 
-                // 31 31 -> real 101 expect 61
-                expect = a_2 + b_2;
-                diff = expect - res_2;
-                if (diff == 0) continue;
-                definiteDigit = diff;
+                expectedSum = aTensDigit + bTensDigit;
+                difference = expectedSum - resTensDigit;
+                if (difference == 0) continue;
+                confirmedBase = difference;  // 차이가 진수와 관련되므로 확정된 진수 설정
             } else {
-                // 35 - 23
-                // 33 - 23
-                if (a_1 >= b_1) {
-                    continue;
+                // 뺄셈에서 빌림을 고려하여 확정된 진수를 찾는다.
+                if (aUnitsDigit >= bUnitsDigit) {
+                    continue;  // 빌림이 없으면 다음으로
                 }
 
-                // 32 - 25 expect 7 real 3
-                // 21 - 12 expect 9 real 2
-                int expect = 10 + a_1 - b_1;
-
-                int diff = expect - res_1;
-                definiteDigit = 10 - diff;
+                int expectedDifference = 10 + aUnitsDigit - bUnitsDigit;    // 빌림이 발생한 일의 자리 계산
+                int difference = expectedDifference - resUnitsDigit;
+                confirmedBase = 10 - difference;      // 차이를 통해 진수를 계산하여 확정된 진수 설정
             }
         }
 
-        if (guessLowerDigit == 9) {
-            definiteDigit = 9;
+        // 추정한 최소 진수가 9인 경우 확정된 진수를 9로 설정 (진수는 최대 9까지)
+        if (estimatedMinimumBase == 9) {
+            confirmedBase = 9;
         }
 
+        // 결과가 'X'인 표현식에 대해 결과를 계산한다.
         for (int i = 0; i < expressions.length; i++) {
-            if (visited[i]) continue;
+            if (isVisited[i]) continue;  // 이미 처리된 표현식은 넘어감
 
-            String exp = expressions[i];
-            String[] tokens = exp.split(" ");
+            String expression = expressions[i];
+            String[] tokens = expression.split(" ");
 
-            int a = Integer.parseInt(tokens[0]);
+            int operandA = Integer.parseInt(tokens[0]);
             String operator = tokens[1];
-            int b = Integer.parseInt(tokens[2]);
-            String res = tokens[4];
+            int operandB = Integer.parseInt(tokens[2]);
+            String resultStr = tokens[4];
 
-            if(!res.equals("X")) continue;
+            if (!resultStr.equals("X")) continue;  // 결과가 있는 표현식은 넘어감
 
-            int a_1 = a % 10;
-            int a_2 = a / 10;
+            int aUnitsDigit = operandA % 10;   // operandA의 일의 자리
+            int aTensDigit = operandA / 10;    // operandA의 십의 자리
 
-            int b_1 = b % 10;
-            int b_2 = b / 10;
+            int bUnitsDigit = operandB % 10;   // operandB의 일의 자리
+            int bTensDigit = operandB / 10;    // operandB의 십의 자리
 
-            // 추측된 진수로 진행
-            if (definiteDigit == -1) {
+            // 확정된 진수가 없는 경우 추정한 최소 진수로 결과를 계산
+            if (confirmedBase == -1) {
                 if (operator.equals("+")) {
-                    // 13 + 14 -> real 32 expect 27 real 30 expect 27
-
-                    if (a_1 + b_1 >= guessLowerDigit || a_2 + b_2 >= guessLowerDigit) {
-                        answer[answerIdx++] = a + " " + operator + " " + b + " = ?";
+                    // 덧셈에서 추정한 진수로 결과를 계산하고, 올림이 발생하면 '?'로 표시
+                    if (aUnitsDigit + bUnitsDigit >= estimatedMinimumBase || aTensDigit + bTensDigit >= estimatedMinimumBase) {
+                        resultExpressions[resultIndex++] = operandA + " " + operator + " " + operandB + " = ?";
                         continue;
                     }
 
-                    answer[answerIdx++] = a + " " + operator + " " + b + " = " + (a + b);
+                    // 결과를 계산하여 저장
+                    resultExpressions[resultIndex++] = operandA + " " + operator + " " + operandB + " = " + (operandA + operandB);
                 } else {
-                    if (a_1 < b_1) {
-                        answer[answerIdx++] = a + " " + operator + " " + b + " = ?";
+                    // 뺄셈에서 추정한 진수로 결과를 계산하고, 빌림이 발생하면 '?'로 표시
+                    if (aUnitsDigit < bUnitsDigit) {
+                        resultExpressions[resultIndex++] = operandA + " " + operator + " " + operandB + " = ?";
                         continue;
                     }
 
-                    answer[answerIdx++] = a + " " + operator + " " + b + " = " + (a - b);
+                    // 결과를 계산하여 저장
+                    resultExpressions[resultIndex++] = operandA + " " + operator + " " + operandB + " = " + (operandA - operandB);
                 }
             }
-            // 확정된 진수로 진행
+            // 확정된 진수가 있는 경우 그 진수로 결과를 계산
             else {
-                if (operator.equals("+")) {
-                    calc(a, b, operator);
-                } else {
-                    calc(a, b, operator);
-                }
+                calculateResult(operandA, operandB, operator);  // 계산 메서드 호출
             }
         }
 
-
-        return Arrays.copyOf(answer, answerIdx);
+        return Arrays.copyOf(resultExpressions, resultIndex);  // 결과 배열 반환
     }
 
-    private static void calc(int a, int b, String operator) {
-        int a_1 = a % 10;
-        int a_2 = a / 10;
+    // 확정된 진수를 사용하여 결과를 계산하는 메서드
+    private static void calculateResult(int operandA, int operandB, String operator) {
+        int aUnitsDigit = operandA % 10;  // operandA의 일의 자리
+        int aTensDigit = operandA / 10;   // operandA의 십의 자리
 
-        int b_1 = b % 10;
-        int b_2 = b / 10;
+        int bUnitsDigit = operandB % 10;  // operandB의 일의 자리
+        int bTensDigit = operandB / 10;   // operandB의 십의 자리
 
-        int temp = 0;
-        int res_1 = 0;
-        int res_2 = 0;
-        int res_3 = 0;
+        int carryOrBorrow = 0;   // 올림 또는 빌림을 저장할 변수
+        int resUnitsDigit = 0;   // 결과의 일의 자리
+        int resTensDigit = 0;    // 결과의 십의 자리
+        int resHundredsDigit = 0; // 결과의 백의 자리 (덧셈에서 발생할 수 있음)
 
         if (operator.equals("+")) {
 
-            if (a_1 + b_1 >= definiteDigit) {
-                temp = 1;
-                res_1 = a_1 + b_1 - definiteDigit;
+            // 덧셈에서 일의 자리 계산
+            if (aUnitsDigit + bUnitsDigit >= confirmedBase) {
+                carryOrBorrow = 1;  // 올림 발생
+                resUnitsDigit = aUnitsDigit + bUnitsDigit - confirmedBase;
             } else {
-                res_1 = a_1 + b_1;
+                resUnitsDigit = aUnitsDigit + bUnitsDigit;
             }
 
-            if (a_2 + b_2 + temp >= definiteDigit) {
-                res_3 = 1;
-                res_2 = a_2 + b_2 + temp - definiteDigit;
+            // 덧셈에서 십의 자리 계산
+            if (aTensDigit + bTensDigit + carryOrBorrow >= confirmedBase) {
+                resHundredsDigit = 1;  // 백의 자리 발생
+                resTensDigit = aTensDigit + bTensDigit + carryOrBorrow - confirmedBase;
             } else {
-                res_2 = a_2 + b_2 + temp;
+                resTensDigit = aTensDigit + bTensDigit + carryOrBorrow;
             }
-            answer[answerIdx++] = a + " " + operator + " " + b + " = " + (res_1 + res_2 * 10 + res_3 * 100);
+
+            // 최종 결과를 계산하여 저장
+            int finalResult = resUnitsDigit + resTensDigit * 10 + resHundredsDigit * 100;
+            resultExpressions[resultIndex++] = operandA + " " + operator + " " + operandB + " = " + finalResult;
         } else {
-            if (a_1 < b_1) {
-                a_2--;
-                a_1 += definiteDigit; //////////
-                res_1 = a_1 - b_1;
+            // 뺄셈에서 일의 자리 계산
+            if (aUnitsDigit < bUnitsDigit) {
+                aTensDigit--;                   // 빌림 발생으로 십의 자리에서 1 차감
+                aUnitsDigit += confirmedBase;    // 일의 자리에 진수를 더함
+                resUnitsDigit = aUnitsDigit - bUnitsDigit;
             } else {
-                res_1 = a_1 - b_1;
+                resUnitsDigit = aUnitsDigit - bUnitsDigit;
             }
 
-            res_2 = a_2 - b_2;
+            // 뺄셈에서 십의 자리 계산
+            resTensDigit = aTensDigit - bTensDigit;
 
-            answer[answerIdx++] = a + " " + operator + " " + b + " = " + (res_1 + res_2 * 10);
+            // 최종 결과를 계산하여 저장
+            int finalResult = resUnitsDigit + resTensDigit * 10;
+            resultExpressions[resultIndex++] = operandA + " " + operator + " " + operandB + " = " + finalResult;
         }
     }
 }
