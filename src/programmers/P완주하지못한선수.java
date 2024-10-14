@@ -19,6 +19,7 @@ public class P완주하지못한선수 {
             for(Map.Entry<String, Integer> e : map.entrySet()){
                 if(e.getValue() != 0) return e.getKey();
             }
+            return "";
         }
     }
 }
