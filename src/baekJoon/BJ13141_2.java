@@ -71,6 +71,16 @@ public class BJ13141_2 {
             maxDist[to][from] = maxDist[from][to];
         }
 
+        for (int i = 1; i < minDist.length; i++) {
+            for (int j = 1; j < minDist.length; j++) {
+                System.out.print(minDist[i][j] > 30 ? "X" : minDist[i][j]>20 ? minDist[i][j] : "  "+ minDist[i][j]);
+            }
+            System.out.println();
+        }
+
+        System.out.println();
+        System.out.println("최소 계산 전");
+
         for (int k = 1; k <= n; k++) {
             for (int i = 1; i <= n; i++) {
                 for (int j = 1; j <= n; j++) {
@@ -78,6 +88,29 @@ public class BJ13141_2 {
                 }
             }
         }
+        System.out.println();
+        System.out.println("최소 계산 후");
+
+        for (int i = 1; i < minDist.length; i++) {
+            for (int j = 1; j < minDist.length; j++) {
+                System.out.print(minDist[i][j] > 30 ? "X" : minDist[i][j]>20 ? minDist[i][j] : "  "+ minDist[i][j]);
+            }
+            System.out.println();
+        }
+
+        System.out.println();
+        System.out.println("최대");
+
+        for (int i = 1; i < minDist.length; i++) {
+            for (int j = 1; j < minDist.length; j++) {
+                System.out.print(maxDist[i][j] > 30 ? "X" : maxDist[i][j]>20 ? maxDist[i][j] : "  "+ maxDist[i][j]);
+            }
+            System.out.println();
+        }
+
+
+        System.out.println();
+
 
         double minTime = Double.MAX_VALUE;
 
