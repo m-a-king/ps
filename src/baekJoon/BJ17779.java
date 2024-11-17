@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.StringTokenizer;
 
+// 재채점 오답 문제
+
 public class BJ17779 {
     static int n;
     static int[][] map;
