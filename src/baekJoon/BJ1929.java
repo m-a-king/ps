@@ -3,6 +3,7 @@ package baekJoon;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Arrays;
 
 import static java.lang.Integer.parseInt;
 
@@ -16,24 +17,31 @@ public class BJ1929 {
         int start = parseInt(input[0]);
         int end = parseInt(input[1]);
 
+        boolean[] isPrime = new boolean[end + 1];
+        Arrays.fill(isPrime, true);
+        isPrime[0] = false;
+        isPrime[1] = false;
+
+        StringBuilder stringBuilder = new StringBuilder();
+
+        for (int i = 2; i <= Math.sqrt(end); i++) {
+            if (isPrime[i]) {
+//                int firstMultipleInRange = ((start + i - 1) / i) * i;
+                int nextMultiple = i * i;
+                for (int j = nextMultiple; j <= end; j += i) {
+                    isPrime[j] = false;
+                }
+            }
+        }
+
         for (int i = start; i <= end; i++) {
-
-            if (checkPrime(i)) {
-                System.out.println(i);
-            }
-        }
-    }
-
-    private static boolean checkPrime(int target) {
-        if (target < 2) {
-            return false;
-        }
-        for (int i = 2; i * i <= target; i++) {
-            if (target % i == 0) {
-                return false;
+            if (isPrime[i]) {
+                stringBuilder.append(i).append("\n");
             }
         }
 
-        return true;
+        System.out.println(stringBuilder.toString().trim());
     }
+
+
 }
