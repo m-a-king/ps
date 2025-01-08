@@ -3,72 +3,13 @@ package baekJoon;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.PriorityQueue;
 import java.util.StringTokenizer;
+import java.util.TreeMap;
+import java.util.TreeSet;
 
 public class BJ21939 {
-
-    private static class Problems {
-        private final PriorityQueue<Integer> ascProblemDifficulties;
-        private final PriorityQueue<Integer> desProblemDifficulties;
-        private final Map<Integer, List<Integer>> difficultyToProblemNumbers;
-        private final Map<Integer, Integer> problemNumberToDifficulty;
-
-        private Problems() {
-            this.ascProblemDifficulties = new PriorityQueue<>();
-            this.desProblemDifficulties = new PriorityQueue<>(Comparator.reverseOrder());
-            this.difficultyToProblemNumbers = new HashMap<>();
-            this.problemNumberToDifficulty = new HashMap<>();
-        }
-
-        public void add(Problem problem) {
-            ascProblemDifficulties.offer(problem.difficulty);
-            desProblemDifficulties.offer(problem.difficulty);
-            difficultyToProblemNumbers
-                    .computeIfAbsent(problem.difficulty, __ -> new ArrayList<>())
-                    .add(problem.number);
-            problemNumberToDifficulty.put(problem.number, problem.difficulty);
-        }
-
-        public void recommend(int type) {
-            if (type == -1) {
-                assert ascProblemDifficulties.peek() != null;
-                int difficulty = ascProblemDifficulties.peek();
-
-                List<Integer> problemNumbers = difficultyToProblemNumbers.get(difficulty);
-                problemNumbers.sort(Comparator.naturalOrder());
-                Integer easiestAndSmallest = problemNumbers.stream().findFirst().orElseThrow();
-
-                System.out.println(easiestAndSmallest);
-                return;
-            }
-
-            if (type == 1) {
-                assert desProblemDifficulties.peek() != null;
-                int difficulty = desProblemDifficulties.peek();
-
-                List<Integer> problemNumbers = difficultyToProblemNumbers.get(difficulty);
-                problemNumbers.sort(Comparator.reverseOrder());
-                Integer hardestAndBiggest = problemNumbers.stream().findFirst().orElseThrow();
-
-                System.out.println(hardestAndBiggest);
-                return;
-            }
-        }
-
-        public void solve(Integer number) {
-            int difficulty = problemNumberToDifficulty.get(number);
-            ascProblemDifficulties.remove(difficulty);
-            desProblemDifficulties.remove(difficulty);
-            List<Integer> problemNumbers = difficultyToProblemNumbers.get(difficulty);
-            problemNumbers.remove(number);
-        }
-    }
 
     private static class Problem {
         private final int number;
@@ -77,6 +18,54 @@ public class BJ21939 {
         public Problem(int number, int difficulty) {
             this.number = number;
             this.difficulty = difficulty;
+        }
+    }
+
+    private static class Problems {
+        private final TreeMap<Integer, TreeSet<Integer>> difficultyTree;
+        private final Map<Integer, Integer> numberToDifficulty;
+
+        public Problems() {
+            this.difficultyTree = new TreeMap<>();
+            this.numberToDifficulty = new HashMap<>();
+        }
+
+        public void add(Problem problem) {
+            int diff = problem.difficulty;
+            int num = problem.number;
+
+            difficultyTree
+                    .computeIfAbsent(problem.difficulty, __ -> new TreeSet<>())
+                    .add(problem.number);
+
+            numberToDifficulty.put(num, diff);
+        }
+
+        public void recommend(int type) {
+            final int EASIEST = -1;
+
+            if (type == EASIEST) {
+                int easiestNumber = difficultyTree.firstKey();
+                int easiestAndSmallestNumber = difficultyTree.get(easiestNumber).first();
+                System.out.println(easiestAndSmallestNumber);
+                return;
+            }
+
+            int hardestNumber = difficultyTree.lastKey();
+            int hardestAndBiggestNumber = difficultyTree.get(hardestNumber).last();
+            System.out.println(hardestAndBiggestNumber);
+        }
+
+        public void solve(Integer number) {
+            int difficulty = numberToDifficulty.get(number);
+
+            TreeSet<Integer> numbers = difficultyTree.get(difficulty);
+            numbers.remove(number);
+            numberToDifficulty.remove(number);
+
+            if (numbers.isEmpty()) {
+                difficultyTree.remove(difficulty);
+            }
         }
     }
 
