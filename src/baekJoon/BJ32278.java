@@ -11,16 +11,14 @@ public class BJ32278 {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         long N = Long.parseLong(bufferedReader.readLine());
 
-        if (N >= -32_768 && N <= 32_767) {
+        if (N >= Short.MIN_VALUE && N <= Short.MAX_VALUE) {
             System.out.println("short");
             return;
         }
-        if (N >= -2_147_483_648L && N <= 2_147_483_647L) {
+        if (N >= Integer.MIN_VALUE && N <= Integer.MAX_VALUE) {
             System.out.println("int");
             return;
         }
-        if (N >= -9_223_372_036_854_775_808L && N <= 9_223_372_036_854_775_807L) {
-            System.out.println("long long");
-        }
+        System.out.println("long long");
     }
 }
