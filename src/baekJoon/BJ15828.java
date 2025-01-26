@@ -3,6 +3,8 @@ package baekJoon;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 public class BJ15828 {
 
@@ -10,9 +12,7 @@ public class BJ15828 {
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         int N = Integer.parseInt(bufferedReader.readLine());
 
-        int[] queue = new int[N];
-        int header = 0;
-        int pointer = 0;
+        Queue<Integer> queue = new ArrayDeque<>();
         int size = 0;
 
         while (true) {
@@ -23,7 +23,7 @@ public class BJ15828 {
             }
 
             if (info == 0) {
-                header++;
+                queue.poll();
                 size--;
                 continue;
             }
@@ -32,8 +32,7 @@ public class BJ15828 {
                 continue;
             }
 
-            queue[pointer % N] = info;
-            pointer++;
+            queue.offer(info);
             size++;
         }
 
@@ -44,8 +43,8 @@ public class BJ15828 {
 
         StringBuilder result = new StringBuilder();
 
-        for (int i = header; i < header + size; i++) {
-            result.append(queue[i % N]).append(" ");
+        for(int e : queue) {
+            result.append(e).append(" ");
         }
 
         System.out.println(result.toString().trim());
