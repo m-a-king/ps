@@ -21,11 +21,11 @@ public class BJ16398 {
             StringTokenizer stringTokenizer = new StringTokenizer(bufferedReader.readLine());
 
             for (int j = 0; j < N; j++) {
-                if (i == j) {
+                if (i < j) {
                     continue;
                 }
                 int weight = Integer.parseInt(stringTokenizer.nextToken());
-                pq.offer(Edge.of(i, j, weight));
+                pq.offer(new Edge(i, j, weight));
             }
         }
 
@@ -47,13 +47,7 @@ public class BJ16398 {
                 continue;
             }
 
-            if (parents[parent1] < parents[parent2]) {
-                parents[parent1] += parents[parent2];
-                parents[parent2] = parent1;
-            } else {
-                parents[parent2] += parents[parent1];
-                parents[parent1] = parent2;
-            }
+            union(parents, parent1, parent2);
 
             totalWeight += edge.weight;
             selectCount++;
@@ -61,6 +55,16 @@ public class BJ16398 {
 
         System.out.println(totalWeight);
 
+    }
+
+    private static void union(int[] parents, int parent1, int parent2) {
+        if (parents[parent1] < parents[parent2]) {
+            parents[parent1] += parents[parent2];
+            parents[parent2] = parent1;
+            return;
+        }
+        parents[parent2] += parents[parent1];
+        parents[parent1] = parent2;
     }
 
     private static int find(int[] parents, int target) {
@@ -75,14 +79,10 @@ public class BJ16398 {
         final int y;
         final int weight;
 
-        private Edge(int x, int y, int weight) {
+        public Edge(int x, int y, int weight) {
             this.x = x;
             this.y = y;
             this.weight = weight;
-        }
-
-        public static Edge of(int x, int y, int weight) {
-            return new Edge(x, y, weight);
         }
     }
 }
