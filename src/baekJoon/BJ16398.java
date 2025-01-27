@@ -30,7 +30,7 @@ public class BJ16398 {
         }
 
         int selectCount = 0;
-        int totalWeight = 0;
+        long totalWeight = 0;
 
         int[] parents = new int[N];
         Arrays.fill(parents, -1);
