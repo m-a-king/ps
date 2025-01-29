@@ -30,14 +30,15 @@ public class BJ31860 {
         int count = 0;
 
         while (!importance.isEmpty()) {
-            Integer curr = importance.poll();
+            Integer currImportance = importance.poll();
 
-            yesterdaySatisfaction = yesterdaySatisfaction / 2 + curr;
+            yesterdaySatisfaction = yesterdaySatisfaction / 2 + currImportance;
             count++;
             result.append(yesterdaySatisfaction).append("\n");
 
-            if (curr - M > K) {
-                importance.offer(curr - M);
+            int processedImportance = currImportance - M;
+            if (processedImportance > K) {
+                importance.offer(processedImportance);
             }
         }
 
