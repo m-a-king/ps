@@ -3,6 +3,8 @@ package baekJoon;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.PriorityQueue;
 import java.util.StringTokenizer;
 
@@ -21,7 +23,8 @@ public class BJ17612_optimized {
     private static class Customer {
         int id;
         int w;
-        Counter counter;
+        int counterIdx;
+        int finishTime;
 
         public Customer(int id, int w) {
             this.id = id;
@@ -29,7 +32,8 @@ public class BJ17612_optimized {
         }
 
         public void fixCounterInfo(Counter counter) {
-            this.counter = new Counter(counter.idx, counter.finishTime);
+            this.counterIdx = counter.idx;
+            this.finishTime = counter.finishTime;
         }
     }
 
@@ -50,14 +54,7 @@ public class BJ17612_optimized {
                 }
         );
 
-        PriorityQueue<Customer> processedCustomers = new PriorityQueue<>(
-                (a, b) -> {
-                    if (a.counter.finishTime == b.counter.finishTime) {
-                        return b.counter.idx - a.counter.idx;
-                    }
-                    return a.counter.finishTime - b.counter.finishTime;
-                }
-        );
+        List<Customer> processedCustomers = new ArrayList<>();
 
         for (int i = 0; i < k; i++) {
             counters.add(new Counter(i, 0));
@@ -82,8 +79,14 @@ public class BJ17612_optimized {
         long result = 0;
         int seq = 1;
 
-        while (!processedCustomers.isEmpty()) {
-            Customer customer = processedCustomers.poll();
+        processedCustomers.sort((a, b) -> {
+            if (a.finishTime == b.finishTime) {
+                return b.counterIdx - a.counterIdx;
+            }
+            return a.finishTime - b.finishTime;
+        });
+
+        for (Customer customer : processedCustomers) {
             result += (long) customer.id * seq++;
         }
 
