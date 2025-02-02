@@ -3,8 +3,10 @@ package baekJoon;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class BJ31854 {
@@ -15,9 +17,12 @@ public class BJ31854 {
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         N = Integer.parseInt(bufferedReader.readLine());
+        int totalNodes = N * N;
+
+        int[] inDegree = new int[totalNodes];
 
         List<List<Integer>> graph = new ArrayList<>();
-        for (int i = 0; i < N * N; i++) {
+        for (int i = 0; i < totalNodes; i++) {
             graph.add(new ArrayList<>());
         }
 
@@ -26,12 +31,16 @@ public class BJ31854 {
             for (int j = 0; j < N - 1; j++) {
                 String sign = stringTokenizer.nextToken();
 
-                if (sign.equals("<")) {
-                    graph.get((N * i) + j + 1).add((N * i) + j);
-                } else {
-                    graph.get((N * i) + j).add((N * i) + j + 1);
-                }
+                int left = (N * i) + j;
+                int right = left + 1;
 
+                if (sign.equals("<")) {
+                    graph.get(left).add(right);
+                    inDegree[right]++;
+                } else {
+                    graph.get(right).add(left);
+                    inDegree[left]++;
+                }
             }
         }
 
@@ -40,22 +49,38 @@ public class BJ31854 {
             for (int j = 0; j < N; j++) {
                 String sign = stringTokenizer.nextToken();
 
+                int top = (N * i) + j;
+                int bottom = top + N;
+
                 if (sign.equals("<")) {
-                    graph.get((N * (i + 1)) + j).add((N * i) + j);
+                    graph.get(top).add(bottom);
+                    inDegree[bottom]++;
                 } else {
-                    graph.get((N * i) + j).add((N * (i + 1)) + j);
+                    graph.get(bottom).add(top);
+                    inDegree[top]++;
                 }
             }
         }
 
-        int[] visited = new int[N * N];
+        int[] visited = new int[totalNodes];
         int seq = 1;
 
-        while (seq <= N * N) {
-            int startPoint = getStartPoint(graph, visited);
+        Queue<Integer> queue = new ArrayDeque<>();
+        for (int i = 0; i < totalNodes; i++) {
+            if (inDegree[i] == 0) {
+                queue.offer(i);
+            }
+        }
 
-            visited[startPoint] = seq++;
-            processAdjNode(graph, startPoint);
+        while (!queue.isEmpty()) {
+            int u = queue.poll();
+            visited[u] = seq++;
+            for (int v : graph.get(u)) {
+                inDegree[v]--;
+                if (inDegree[v] == 0) {
+                    queue.offer(v);
+                }
+            }
         }
 
         StringBuilder result = new StringBuilder();
@@ -67,34 +92,5 @@ public class BJ31854 {
         }
 
         System.out.println(result);
-    }
-
-    private static void processAdjNode(List<List<Integer>> graph, Integer startPoint) {
-
-        int left = startPoint - 1;
-        int right = startPoint + 1;
-        int top = startPoint - N;
-        int bottom = startPoint + N;
-        int[] adjNodes = {left, right, top, bottom};
-
-        for (Integer adjNode : adjNodes) {
-            if (isSafe(adjNode)) {
-                graph.get(adjNode).remove(startPoint);
-            }
-        }
-    }
-
-    private static boolean isSafe(int adjNode) {
-        return 0 <= adjNode && adjNode < N * N;
-    }
-
-    private static int getStartPoint(List<List<Integer>> graph, int[] visited) {
-        for (int i = 0; i < graph.size(); i++) {
-            List<Integer> adj = graph.get(i);
-            if (adj.isEmpty() && visited[i] == 0) {
-                return i;
-            }
-        }
-        return 0;
     }
 }
