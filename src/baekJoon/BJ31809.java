@@ -25,14 +25,14 @@ public class BJ31809 {
             int K = Integer.parseInt(stringTokenizer.nextToken());
 
             stringTokenizer = new StringTokenizer(bufferedReader.readLine());
-            int[] C = new int[N];
-            for (int i = 0; i < N; i++) {
+            int[] C = new int[N+1];
+            for (int i = 1; i <= N; i++) {
                 C[i] = Integer.parseInt(stringTokenizer.nextToken());
             }
 
             int[] schedule = new int[P + 1];
-            for (int i = 0; i < N; i++) {
-                schedule[C[i]] = i + 1;
+            for (int i = 1; i <= N; i++) {
+                schedule[C[i]] = i;
             }
             schedule[0] = schedule[P];
 
