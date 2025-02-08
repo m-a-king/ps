@@ -20,6 +20,7 @@ public class BJ4196 {
             int N = Integer.parseInt(stringTokenizer.nextToken());
             int M = Integer.parseInt(stringTokenizer.nextToken());
 
+            // 도미노의 특성
             List<List<Integer>> outGraph = new ArrayList<>();
             List<List<Integer>> inGraph = new ArrayList<>();
 
@@ -39,6 +40,7 @@ public class BJ4196 {
 
             List<List<Integer>> SCCs = findSCCs(N, outGraph, inGraph);
 
+            // 각 도미노 블록들에게 SCC 번호를 매김
             int idx = 1;
             int[] sccIdx = new int[N + 1];
             for (List<Integer> scc : SCCs) {
@@ -48,6 +50,7 @@ public class BJ4196 {
                 idx++;
             }
 
+            // 각 SCC들에게 진입 간선이 있는지 확인
             boolean[] hasIndegree = new boolean[idx];
             for (int i = 1; i <= N; i++) {
                 for (int v : outGraph.get(i)) {
@@ -57,6 +60,7 @@ public class BJ4196 {
                 }
             }
 
+            // 진입 간선이 없다면 수동으로 넘어뜨려야 함
             int result = 0;
             for (int i = 1; i < idx; i++) {
                 if (!hasIndegree[i]) {
@@ -68,6 +72,7 @@ public class BJ4196 {
         }
     }
 
+    // DFS 2번으로 SCC 탐색 (코사라주 알고리즘)
     private static List<List<Integer>> findSCCs(int N, List<List<Integer>> outGraph, List<List<Integer>> inGraph) {
         Stack<Integer> reversePostorder = new Stack<>();
         boolean[] visited = new boolean[N + 1];
@@ -91,6 +96,7 @@ public class BJ4196 {
         return SCCs;
     }
 
+    // 후위 순회의 결과의 역순을 저장
     private static void dfs(List<List<Integer>> outGraph, int curr, boolean[] visited, Stack<Integer> reversePostorder) {
         if (visited[curr]) {
             return;
@@ -102,6 +108,7 @@ public class BJ4196 {
         reversePostorder.push(curr);
     }
 
+    // SCC를 저장
     private static void dfs(List<List<Integer>> inGraph, int curr, boolean[] visited, List<Integer> SCC) {
         if (visited[curr]) {
             return;
