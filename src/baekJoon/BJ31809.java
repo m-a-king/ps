@@ -30,6 +30,7 @@ public class BJ31809 {
                 C[i] = Integer.parseInt(stringTokenizer.nextToken());
             }
 
+            // P(주기)의 관점에서 바라본 박멸 순서
             int[] schedule = new int[P + 1];
             for (int i = 1; i <= N; i++) {
                 schedule[C[i]] = i;
@@ -52,11 +53,11 @@ public class BJ31809 {
                 indegree[Y]++;
             }
 
+            // 최소 진입 간선 확인
             int minIndegree = Integer.MAX_VALUE;
             for (int curr : indegree) {
                 minIndegree = Math.min(minIndegree, curr);
             }
-
             if (minIndegree > 0) {
                 results.append(((long) N * K) % MOD).append("\n");
                 continue;
@@ -83,6 +84,7 @@ public class BJ31809 {
                     cycleDetector++;
                 }
 
+                // P(주기)동안 멀웨어가 줄어들지 않았다면 단번에 계산 가능
                 if (cycleDetector == P) {
                     result = result + ((long) currMalware * (K - day + 1) % MOD) % MOD;
                     break;
