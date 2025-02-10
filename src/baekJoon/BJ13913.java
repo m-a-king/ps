@@ -22,7 +22,6 @@ public class BJ13913 {
         }
     }
 
-
     public static void main(String[] args) throws IOException {
 
         BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
@@ -33,14 +32,25 @@ public class BJ13913 {
 
         if (N == K) {
             System.out.println(0);
+            System.out.println(N);
+            return;
         }
 
         if (N > K) {
             System.out.println(N - K);
+            StringBuilder stringBuilder = new StringBuilder();
+            for (int i = N; i >= K; i--) {
+                stringBuilder.append(i).append(" ");
+            }
+            System.out.println(stringBuilder);
+            return;
         }
+
+        List<Integer> result = new ArrayList<>();
 
         Queue<State> queue = new ArrayDeque<>();
         int[] visited = new int[K * 2];
+        Arrays.fill(visited, -1);
 
         queue.offer(new State(N, 0));
 
@@ -50,37 +60,38 @@ public class BJ13913 {
             int[] nextPos = {curr.pos - 1, curr.pos + 1, curr.pos * 2};
 
             for (int next : nextPos) {
-                System.out.println("next = " + next);
 
-                if (0 <= next && next < visited.length && visited[next] == 0) {
+                if (0 <= next && next < visited.length && visited[next] == -1) {
                     visited[next] = curr.pos;
 
                     if (next == K) {
-                        System.out.println(curr.time + 1);
-                        StringBuilder stringBuilder = new StringBuilder();
-                        stringBuilder.append(K).append(" ");
+                        result.add(K);
                         int temp = K;
 
                         while (true) {
-                            System.out.println(Arrays.toString(visited));
                             int before = visited[temp];
-                            stringBuilder.append(before).append(" ");
+                            result.add(before);
                             temp = before;
 
                             if (before == N) {
-                                System.out.println(stringBuilder);
+                                printResult(result);
                                 return;
                             }
                         }
                     }
-
                     queue.offer(new State(next, nextTime));
                 }
             }
         }
+    }
 
-        System.out.println();
-
-
+    private static void printResult(List<Integer> result) {
+        System.out.println(result.size() - 1);
+        StringBuilder stringBuilder = new StringBuilder();
+        for (int i = result.size() - 1; i >= 0; i--) {
+            int path = result.get(i);
+            stringBuilder.append(path).append(" ");
+        }
+        System.out.println(stringBuilder);
     }
 }
