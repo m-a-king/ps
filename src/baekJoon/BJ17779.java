@@ -72,41 +72,6 @@ public class BJ17779 {
         minDiff = Math.min(minDiff, currMax - currMin);
     }
 
-    // 구역 내부 사이즈 구하기
-    private static int calcArea(int sx, int ex, int sy, int ey) {
-        int currArea = 0;
-
-        for (int i = sx; i <= ex; i++) {
-            for (int j = sy; j <= ey; j++) {
-                // 5번 구역이면 해당 열은 제외
-                if (areaChecker[i][j] == 5) continue;
-                currArea += map[i][j];
-            }
-        }
-
-        return currArea;
-    }
-
-    // 5번 구역 경계를 따라서 5번 구역 채우기
-    private static void fillArea5(int x, int y, int d1, int d2) {
-        for (int i = x + 1; i < x + d1 + d2; i++) { // 맨 위와 맨 아래 제외
-            boolean boundaryChecker = false;
-            for (int j = 1; j <= n; j++) { // 해당 행의 전체 열 검사
-                if (areaChecker[i][j] == 5) boundaryChecker = !boundaryChecker;
-                if (boundaryChecker) areaChecker[i][j] = 5;
-            }
-
-        }
-
-//        System.out.println();
-//        for (int i = 1; i <= n; i++) {
-//            for (int j = 1; j <= n; j++) {
-//                System.out.print(areaChecker[i][j] + " ");
-//            }
-//            System.out.println();
-//        }
-    }
-
     // 5번 구역 경계선 설정
     private static void setBoundary(int x, int y, int d1, int d2) {
         for (int i = 0; i <= d1; i++) {
@@ -123,6 +88,40 @@ public class BJ17779 {
             // 2. 좌 -> 하
             areaChecker[x + d1 + i][y - d1 + i] = 5;
         }
+    }
+
+    // 5번 구역 경계를 따라서 5번 구역 채우기
+    private static void fillArea5(int x, int y, int d1, int d2) {
+        for (int i = x + 1; i < x + d1 + d2; i++) { // 맨 위와 맨 아래 제외
+            boolean boundaryChecker = false;
+            for (int j = 1; j <= n; j++) { // 해당 행의 전체 열 검사
+                if (areaChecker[i][j] == 5) boundaryChecker = !boundaryChecker;
+                if (boundaryChecker) areaChecker[i][j] = 5;
+            }
+        }
+
+        System.out.println();
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= n; j++) {
+                System.out.print(areaChecker[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    // 구역 내부 사이즈 구하기
+    private static int calcArea(int sx, int ex, int sy, int ey) {
+        int currArea = 0;
+
+        for (int i = sx; i <= ex; i++) {
+            for (int j = sy; j <= ey; j++) {
+                // 5번 구역이면 해당 열은 제외
+                if (areaChecker[i][j] == 5) continue;
+                currArea += map[i][j];
+            }
+        }
+
+        return currArea;
     }
 
     // 문제 조건 따라적음
