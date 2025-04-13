@@ -1,87 +1,74 @@
 package baekJoon;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 public class 소수찾기 {
 
-    static class Solution {
+    class Solution {
 
-        public static int[] splitNum;
-        static Set<Integer> canNumSet = new HashSet<>();
+        static Set<Integer> generated = new HashSet<>();
+        static int length;
 
-        public static void main(String[] args) {
-            System.out.println(solution("17"));
-        }
-
-
-        public static int solution(String numbers) {
+        public int solution(String number) {
             int answer = 0;
-            int intNumber = Integer.parseInt(numbers);
+            length = number.length();
 
-            splitNum = new int[numbers.length()];
-            for (int i = 0; i < numbers.length(); i++) {
-                splitNum[i] = intNumber % 10;
-                intNumber /= 10;
+            String[] numbers = new String[length];
+
+            for(int i=0;i<length;i++){
+                numbers[i] = String.valueOf(number.charAt(i));
             }
 
-            boolean[] visited = new boolean[splitNum.length];
-
-            for (int i = 1; i <= numbers.length(); i++) {
-                createNumber(i, 0, visited);
+            for(int i=1;i<=length;i++){
+                boolean[] visited = new boolean[length];
+                generate(i, numbers, visited, "");
             }
 
-            for (int num : canNumSet) {
-                if (isPrime(num)) {
-                    answer++;
+            Set<Integer> prime = new HashSet<>();
+            int max = 1;
+            for(int i=0;i<length;i++){
+                max *= 10;
+            }
+
+            boolean[] isPrime = new boolean[max];
+            Arrays.fill(isPrime, true);
+
+            isPrime[0] = isPrime[1] = false;
+
+            for(int i=2;i*i<max;i++){
+                if(isPrime[i]){
+                    for(int j=i*i;j<max;j+=i){
+                        isPrime[j] = false;
+                    }
                 }
             }
 
-
-            return answer;
-        }
-
-        private static boolean isPrime(int num) {
-            if (num == 0 || num == 1) {
-                return false;
-            }
-            if (num == 2) {
-                return true;
-            }
-            if (num % 2 == 0) {
-                return false;
-            }
-            for (int i = 3; i <= Math.sqrt(num); i+=2) {
-                if (num % i == 0) {
-                    return false;
+            for(int i=1;i<max;i++){
+                if(isPrime[i]){
+                    prime.add(i);
                 }
             }
-            return true;
+
+            generated.retainAll(prime);
+            return generated.size();
         }
 
-        private static void createNumber(int depth, int number, boolean[] visited) {
-
-            if (depth == 0) {
-                canNumSet.add(number);
+        private void generate(int targetLength, String[] numbers, boolean[] visited, String result){
+            if(result.length() == targetLength){
+                generated.add(Integer.parseInt(result));
                 return;
             }
 
-            for (int i = 0; i < splitNum.length; i++) {
-                if (visited[i]) {
+            for(int i=0;i<length;i++){
+                if(visited[i]) {
                     continue;
                 }
-
-                number = number * 10 + splitNum[i];
-
                 visited[i] = true;
-                createNumber(depth - 1, number, visited);
-                number = number / 10;
+                generate(targetLength, numbers, visited, result + numbers[i]);
                 visited[i] = false;
             }
-
-
         }
     }
-
-
 }
