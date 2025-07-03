@@ -6,7 +6,7 @@ import java.util.Set;
 
 public class 소수찾기 {
 
-    class Solution {
+    static class Solution {
 
         static Set<Integer> generated = new HashSet<>();
         static int length;
@@ -17,18 +17,18 @@ public class 소수찾기 {
 
             String[] numbers = new String[length];
 
-            for(int i=0;i<length;i++){
+            for (int i = 0; i < length; i++) {
                 numbers[i] = String.valueOf(number.charAt(i));
             }
 
-            for(int i=1;i<=length;i++){
+            for (int i = 1; i <= length; i++) {
                 boolean[] visited = new boolean[length];
                 generate(i, numbers, visited, "");
             }
 
             Set<Integer> prime = new HashSet<>();
             int max = 1;
-            for(int i=0;i<length;i++){
+            for (int i = 0; i < length; i++) {
                 max *= 10;
             }
 
@@ -37,16 +37,16 @@ public class 소수찾기 {
 
             isPrime[0] = isPrime[1] = false;
 
-            for(int i=2;i*i<max;i++){
-                if(isPrime[i]){
-                    for(int j=i*i;j<max;j+=i){
+            for (int i = 2; i * i < max; i++) {
+                if (isPrime[i]) {
+                    for (int j = i * i; j < max; j += i) {
                         isPrime[j] = false;
                     }
                 }
             }
 
-            for(int i=1;i<max;i++){
-                if(isPrime[i]){
+            for (int i = 1; i < max; i++) {
+                if (isPrime[i]) {
                     prime.add(i);
                 }
             }
@@ -55,14 +55,14 @@ public class 소수찾기 {
             return generated.size();
         }
 
-        private void generate(int targetLength, String[] numbers, boolean[] visited, String result){
-            if(result.length() == targetLength){
+        private void generate(int targetLength, String[] numbers, boolean[] visited, String result) {
+            if (result.length() == targetLength) {
                 generated.add(Integer.parseInt(result));
                 return;
             }
 
-            for(int i=0;i<length;i++){
-                if(visited[i]) {
+            for (int i = 0; i < length; i++) {
+                if (visited[i]) {
                     continue;
                 }
                 visited[i] = true;
