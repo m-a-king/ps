@@ -31,7 +31,7 @@ public class 귤고르기 {
             for (int count : values) {
                 System.out.println("count = " + count);
                 System.out.println("k = " + k);
-                if (k - count >= 0) {
+                if (k - count > 0) {
                     answer++;
                     k -= count;
                 } else {
@@ -39,7 +39,7 @@ public class 귤고르기 {
                 }
             }
 
-            return answer;
+            return answer + 1;
         }
     }
 }
