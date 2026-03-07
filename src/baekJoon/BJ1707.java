@@ -3,10 +3,8 @@ package baekJoon;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
 import java.util.StringTokenizer;
 
 public class BJ1707 {
@@ -41,48 +39,44 @@ public class BJ1707 {
             }
 
             boolean[] visited = new boolean[V + 1];
-            boolean isBipartiteGraph = false;
-            for (int j = 1; j <= V; j++) {
+            int[] color = new int[V + 1];
+            boolean bipartiteGraph = true;
 
+            for (int j = 1; j <= V; j++) {
                 if (visited[j]) {
                     continue;
                 }
+                color[j] = 1;
 
-                if (isBipartiteGraph(j, visited, graph)) {
-                    isBipartiteGraph = true;
-                } else {
-                    isBipartiteGraph = false;
+                bipartiteGraph = isBipartiteGraph(j, visited, graph, color);
+
+                if (!bipartiteGraph) {
                     break;
                 }
             }
-            answer.append(isBipartiteGraph ? "YES\n" : "NO\n");
-        }
 
+            answer.append(bipartiteGraph ? "YES\n" : "NO\n");
+        }
         System.out.println(answer);
     }
 
-    private static boolean isBipartiteGraph(int startV, boolean[] visited, List<List<Integer>> graph) {
-        Queue<Integer> queue = new ArrayDeque<>();
-        int[] teams = new int[V + 1];
-        queue.offer(startV);
-        visited[startV] = true;
-        teams[startV] = 1;
+    private static boolean isBipartiteGraph(
+            int cv,
+            boolean[] visited,
+            List<List<Integer>> graph,
+            int[] color
+    ) {
+        visited[cv] = true;
 
-        while (!queue.isEmpty()) {
-            final int cv = queue.poll();
-
-            for (int nv : graph.get(cv)) {
-                if (teams[nv] == teams[cv]) {
+        for (Integer nv : graph.get(cv)) {
+            if (!visited[nv]) {
+                color[nv] = color[cv] == 1 ? 2 : 1;
+                if (!isBipartiteGraph(nv, visited, graph, color)) {
                     return false;
                 }
-
-                if (visited[nv]) {
-                    continue;
-                }
-                visited[nv] = true;
-
-                teams[nv] = teams[cv] == 1 ? 2 : 1;
-                queue.offer(nv);
+            }
+            if (color[nv] == color[cv]) {
+                return false;
             }
         }
 
